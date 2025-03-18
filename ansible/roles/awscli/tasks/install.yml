@@ -1,0 +1,24 @@
+- name: 'Install : Download latest awscli package'
+  ansible.builtin.get_url:
+    url: "{{ awscli_package_url }}"
+    dest: "{{ awscli_download_dir }}/{{ awscli_package_name }}"
+    mode: '0440'
+
+- name: 'Install : Create a directory if it does not exist'
+  ansible.builtin.file:
+    path: "{{ awscli_download_dir }}/aws"
+    state: directory
+    mode: '0755'
+
+- name: 'Install : Unarchive awscli to {{ awscli_download_dir }}'
+  become: true
+  ansible.builtin.unarchive:
+    src: "{{ awscli_download_dir }}/{{ awscli_package_name }}"
+    dest: "{{ awscli_download_dir }}"
+
+- name: 'Install : Run awscli installation script'
+  become: true
+  ansible.builtin.shell:
+  args:
+    chdir: "{{ awscli_download_dir }}/aws"
+    cmd: ./install --update
