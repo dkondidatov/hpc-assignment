@@ -1,0 +1,21 @@
+- name: 'Prepare : Create munge group with static GID'
+  become: true
+  ansible.builtin.group:
+    name: munge
+    state: present
+    gid: 1221
+
+- name: 'Prepare : Create munge user with static UID'
+  become: true
+  ansible.builtin.user:
+    uid: 1221
+    name: munge    
+    group: munge
+    shell: /usr/sbin/nologin
+    create_home: true
+    system: true
+    
+- name: 'Prepare : Make sure munge dependencies are installed'
+  become: true
+  ansible.builtin.apt:
+    pkg: "{{ munge_dependencies }}"

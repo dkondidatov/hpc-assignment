@@ -1,0 +1,111 @@
+- name: 'Install : Download latest munge package'
+  become: true
+  ansible.builtin.get_url:
+    url: "{{ munge_download_url }}"
+    dest: "{{ munge_download_dir }}"
+    owner: "munge"
+    group: "munge"
+    mode: '0644'
+
+- name: 'Install : Unarchive munge to "{{ munge_download_dir }}"'
+  become: true
+  become_user: munge
+  vars: 
+    ansible_shell_allow_world_readable_temp: true
+  ansible.builtin.unarchive:
+    src: "{{ munge_download_dir }}/{{ munge_package_name }}.{{ munge_package_extension }}"
+    dest: "{{ munge_download_dir }}"
+    owner: "munge"
+    group: "munge"
+    
+- name: 'Install : Run munge bootstrap script'
+  become: true
+  become_user: munge
+  vars: 
+    ansible_shell_allow_world_readable_temp: true
+  ansible.builtin.shell:
+  args:
+    chdir: "{{ munge_download_dir }}/{{ munge_package_name }}"
+    cmd: "./bootstrap"
+
+- name: 'Install : Run munge configure script'
+  become: true
+  become_user: munge
+  vars: 
+    ansible_shell_allow_world_readable_temp: true
+  ansible.builtin.shell:
+  args:
+    chdir: "{{ munge_download_dir }}/{{ munge_package_name }}"
+    cmd: "./configure --prefix={{ munge_prefix }} --sysconfdir={{ munge_sys_config_dir }} --localstatedir={{ munge_local_state_dir }} --runstatedir={{ munge_run_state_dir }}"
+
+- name: 'Install : Run munge make script'
+  become: true
+  become_user: munge
+  vars: 
+    ansible_shell_allow_world_readable_temp: true
+  ansible.builtin.shell:
+  args:
+    chdir: "{{ munge_download_dir }}/{{ munge_package_name }}"
+    cmd: "make"
+
+- name: 'Install : Run munge make install script'
+  become: true
+  ansible.builtin.shell:
+  args:
+    chdir: "{{ munge_download_dir }}/{{ munge_package_name }}"
+    cmd: "make install"
+
+- name: 'Install : Get munge key from AWS SecretManager'
+  become: true
+  #no_log: true is not enabled because the content of the file is not shown in the logs, but could be just in case
+  ansible.builtin.copy:
+    dest: "{{ munge_sys_config_dir }}/munge/munge.key"
+    content: "{{ lookup('amazon.aws.aws_secret', aws_secret_munge_key, region=aws_region) | b64decode }}"
+    owner: munge
+    group: munge
+    mode: '0700'
+
+
+- name: 'Install : Set parameters for {{ munge_sys_config_dir }}/munge'
+  become: true
+  ansible.builtin.file:
+    path: '{{ munge_sys_config_dir }}/munge'
+    state: directory
+    owner: munge
+    group: munge
+    mode: '0700'
+
+- name: 'Install : Set parameters for {{ munge_local_state_dir }}/lib/munge'
+  become: true
+  ansible.builtin.file:
+    path: '{{ munge_local_state_dir }}/lib/munge'
+    state: directory
+    owner: munge
+    group: munge
+    mode: '0700'
+
+- name: 'Install : Set parameters for {{ munge_local_state_dir }}/log/munge'
+  become: true
+  ansible.builtin.file:
+    path: '{{ munge_local_state_dir }}/log/munge'
+    state: directory
+    owner: munge
+    group: munge
+    mode: '0700'
+
+- name: 'Install : Set parameters for {{ munge_run_state_dir }}/munge'
+  become: true
+  ansible.builtin.file:
+    path: '{{ munge_run_state_dir }}/munge'
+    state: directory
+    owner: munge
+    group: munge
+    mode: '0755'
+
+- name: 'Install : Start munge daemon'
+  become: true
+  ansible.builtin.systemd_service:
+    name: munge
+    daemon_reload: true
+    state: started
+    enabled: true

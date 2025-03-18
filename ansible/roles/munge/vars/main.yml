@@ -1,2 +1,5 @@
 ---
-# vars file for munge
+munge_download_url: "https://github.com/dun/munge/releases/download/munge-0.5.16/munge-0.5.16.tar.xz" 
+munge_package_name: "munge-0.5.16"
+aws_secret_munge_key: "munge-dkondidatov"
+aws_region: "eu-central-1"

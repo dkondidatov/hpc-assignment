@@ -1,31 +1,41 @@
-Role Name
+Munge
 =========
 
-A brief description of the role goes here.
+This role will install and configure munge application.
 
 Requirements
 ------------
 
-Any pre-requisites that may not be covered by Ansible itself or the role should be mentioned here. For instance, if the role uses the EC2 module, it may be a good idea to mention in this section that the boto package is required.
+awscli role must be installed
 
 Role Variables
 --------------
-
-A description of the settable variables for this role should go here, including any variables that are in defaults/main.yml, vars/main.yml, and any variables that can/should be set via parameters to the role. Any variables that are read from other roles and/or the global scope (ie. hostvars, group vars, etc.) should be mentioned here as well.
-
-Dependencies
-------------
-
-A list of other roles hosted on Galaxy should go here, plus any details in regards to parameters that may need to be set for other roles, or variables that are used from other roles.
+|Variable|Description|
+|---|---|
+|munge_run_state_dir|Contains path to state dir '/run' by default |
+|munge_prefix|Contains path to binary installation dir '/usr' by default |
+|munge_local_state_dir|Contains path to application state dir '/var' by default |
+|munge_sys_config_dir|Contains path to configuration dir '/etc' by default |
+|munge_download_url|Contains donwload URL. [Source](https://github.com/dun/munge/releases/latest) |
+|munge_package_name|Contains package name with verion |
+|munge_package_extension|Contains package extension 'tar.xz' by default |
+|munge_download_dir|Contains destination dir for downloaded package '/tmp' by default |
+|aws_secret_munge_key|Contains AWS SecretManager's key with munge key stored |
+|aws_region|Contains AWS Region. This value is required for secret acquiring |
+|munge_dependencies|Contains munge dependency packages|
 
 Example Playbook
 ----------------
 
-Including an example of how to use your role (for instance, with variables passed in as parameters) is always nice for users too:
-
-    - hosts: servers
-      roles:
-         - { role: username.rolename, x: 42 }
+```yaml
+---
+- hosts: localhost
+  connection: local
+  tasks:
+    - name: 'Import : munge role'
+      include_role: 
+        name: munge
+```
 
 License
 -------
@@ -35,4 +45,4 @@ BSD
 Author Information
 ------------------
 
-An optional section for the role authors to include contact information, or a website (HTML is not allowed).
+Dmitriy Kondidatov (d.kondidatov@gmail.com)

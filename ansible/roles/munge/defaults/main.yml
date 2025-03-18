@@ -1,2 +1,13 @@
 ---
-# defaults file for munge
+munge_run_state_dir: "/run"
+munge_prefix: "/usr"
+munge_local_state_dir: "/var"
+munge_sys_config_dir: "/etc"
+munge_download_dir: "/tmp"
+munge_package_extension: "tar.xz"
+munge_dependencies:
+  - libssl-dev
+  - autoconf
+  - automake
+  - libtool
+  - make
