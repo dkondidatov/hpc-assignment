@@ -6,6 +6,11 @@
     state: directory
     mode: '0700'
 
+- name: 'Prepare : Make sure openmpi dependencies are installed'
+  become: true
+  ansible.builtin.apt:
+    pkg: "{{ openmpi_dependencies }}"
+
 - name: 'Install : Download openmpi-{{ openmpi_version }} package'
   ansible.builtin.get_url:
     url: "{{ openmpi_package_url }}"
