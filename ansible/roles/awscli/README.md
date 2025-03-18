@@ -36,4 +36,4 @@ BSD
 Author Information
 ------------------
 
-Dmitriy Kondidatov (d.kondidatov@gmail.com)
+Dmitrii Kondidatov (d.kondidatov@gmail.com)
