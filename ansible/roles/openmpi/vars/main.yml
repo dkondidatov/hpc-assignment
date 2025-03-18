@@ -1,0 +1,4 @@
+---
+openmpi_version: 5.0.7
+openmpi_package_url: https://download.open-mpi.org/release/open-mpi/v5.0/openmpi-5.0.7.tar.gz
+openmpi_build_parallelism: 2

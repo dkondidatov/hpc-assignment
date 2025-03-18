@@ -1,0 +1,3 @@
+---
+openmpi_download_dir: "/tmp"
+openmpi_prefix: "/opt/openmpi"

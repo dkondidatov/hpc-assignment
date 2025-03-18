@@ -1,0 +1,38 @@
+---
+- name: 'Prepare : Create final openmpi directory "{{ openmpi_prefix }}"'
+  become: true
+  ansible.builtin.file:
+    path: '{{ openmpi_prefix }}'
+    state: directory
+    mode: '0700'
+
+- name: 'Install : Download openmpi-{{ openmpi_version }} package'
+  ansible.builtin.get_url:
+    url: "{{ openmpi_package_url }}"
+    dest: "{{ openmpi_download_dir }}"
+
+- name: 'Install : Unarchive openmpi to "{{ openmpi_download_dir }}"'
+  ansible.builtin.unarchive:
+    src: "{{ openmpi_download_dir }}/openmpi-{{ openmpi_version }}.tar.gz"
+    dest: "{{ openmpi_download_dir }}"
+
+- name: 'Install : Run openmpi configure script'
+  become: true
+  ansible.builtin.shell:
+  args:
+    chdir: "{{ openmpi_download_dir }}/openmpi-{{ openmpi_version }}"
+    cmd: "./configure --prefix={{ openmpi_prefix }} 2>&1 | tee config.out"
+
+- name: 'Install : Run openmpi make script'
+  become: true
+  ansible.builtin.shell:
+  args:
+    chdir: "{{ openmpi_download_dir }}/openmpi-{{ openmpi_version }}"
+    cmd: "make -j {{ openmpi_build_parallelism }} all 2>&1 | tee make.out"
+
+- name: 'Install : Run openmpi make install script'
+  become: true
+  ansible.builtin.shell:
+  args:
+    chdir: "{{ openmpi_download_dir }}/openmpi-{{ openmpi_version }}"
+    cmd: "make install 2>&1 | tee install.out"
