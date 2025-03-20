@@ -1,0 +1,21 @@
+- name: 'Prepare : Create slurm group with static GID'
+  become: true
+  ansible.builtin.group:
+    name: slurm
+    state: present
+    gid: 1220
+
+- name: 'Prepare : Create slurm user with static UID'
+  become: true
+  ansible.builtin.user:
+    uid: 1220
+    name: slurm    
+    group: slurm
+    shell: /usr/sbin/nologin
+    create_home: false
+    system: true
+
+- name: 'Prepare : Make sure slurm dependencies are installed'
+  become: true
+  ansible.builtin.apt:
+    pkg: "{{ slurm_dependencies }}"

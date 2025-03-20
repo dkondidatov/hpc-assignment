@@ -1,6 +1,6 @@
 ---
 openmpi_download_dir: "/tmp"
-openmpi_prefix: "/opt/openmpi"
+openmpi_prefix: "/usr"
 openmpi_dependencies:
   - autoconf
   - automake

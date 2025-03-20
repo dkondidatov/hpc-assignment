@@ -1,2 +1,12 @@
 ---
-# defaults file for slurm
+slurm_prefix: /usr
+slurm_download_dir: /tmp
+slurm_run_state_dir: "/run"
+slurm_local_state_dir: "/var"
+slurm_sys_config_dir: "/etc/slurm"
+slurm_package_name: slurm-24.11.3
+slurm_package_extension: tar.bz2
+slurm_dependencies:
+  - libpmix-dev
+  - libdbus-1-dev
+  - bzip2

@@ -12,9 +12,9 @@
     name: munge    
     group: munge
     shell: /usr/sbin/nologin
-    create_home: true
+    create_home: false
     system: true
-    
+
 - name: 'Prepare : Make sure munge dependencies are installed'
   become: true
   ansible.builtin.apt:

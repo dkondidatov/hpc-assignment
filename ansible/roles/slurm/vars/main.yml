@@ -1,2 +1,2 @@
 ---
-# vars file for slurm
+slurm_download_url: https://download.schedmd.com/slurm/slurm-24.11.3.tar.bz2

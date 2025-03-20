@@ -1,0 +1,9 @@
+- name: "Clean-up : Remove package archive {{ openmpi_download_dir }}/openmpi-{{ openmpi_version }}.{{ openmpi_package_extension }}"
+  ansible.builtin.file: 
+    name: "{{ openmpi_download_dir }}/openmpi-{{ openmpi_version }}.{{ openmpi_package_extension }}"
+    state: absent 
+
+- name: "Clean-up : Remove unarchived package {{ openmpi_download_dir }}/openmpi-{{ openmpi_version }}"
+  ansible.builtin.file: 
+    name: "{{ openmpi_download_dir }}/openmpi-{{ openmpi_version }}"
+    state: absent 

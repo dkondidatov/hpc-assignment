@@ -1,0 +1,9 @@
+- name: "Clean-up : Remove unarchived package {{ awscli_tmp_package_dir }}"
+  ansible.builtin.file: 
+    name: "{{ awscli_tmp_package_dir }}"
+    state: absent 
+
+- name: "Clean-up : Remove  package archive {{ awscli_package_name }}.{{ awscli_package_extension }}"
+  ansible.builtin.file: 
+    name: "{{ awscli_download_dir }}/{{ awscli_package_name }}.{{ awscli_package_extension }}"
+    state: absent

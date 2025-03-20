@@ -1,11 +1,4 @@
 ---
-- name: 'Prepare : Create final openmpi directory "{{ openmpi_prefix }}"'
-  become: true
-  ansible.builtin.file:
-    path: '{{ openmpi_prefix }}'
-    state: directory
-    mode: '0700'
-
 - name: 'Prepare : Make sure openmpi dependencies are installed'
   become: true
   ansible.builtin.apt:
@@ -41,3 +34,7 @@
   args:
     chdir: "{{ openmpi_download_dir }}/openmpi-{{ openmpi_version }}"
     cmd: "make install 2>&1 | tee install.out"
+
+- name: 'Include : Run clean-up tasks'
+  ansible.builtin.include_tasks:
+    file: cleanup.yml

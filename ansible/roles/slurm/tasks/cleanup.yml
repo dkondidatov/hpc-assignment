@@ -1,0 +1,9 @@
+- name: "Clean-up : Remove package archive {{ slurm_download_dir }}/{{ slurm_package_name }}.{{ slurm_package_extension }}"
+  ansible.builtin.file: 
+    name: "{{ slurm_download_dir }}/{{ slurm_package_name }}.{{ slurm_package_extension }}"
+    state: absent 
+
+- name: "Clean-up : Remove unarchived package {{ slurm_download_dir }}/{{ slurm_package_name }}"
+  ansible.builtin.file: 
+    name: "{{ slurm_download_dir }}/{{ slurm_package_name }}"
+    state: absent 
