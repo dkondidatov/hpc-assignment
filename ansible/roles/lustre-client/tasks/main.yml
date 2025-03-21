@@ -1,0 +1,12 @@
+---
+#- name: 'Include : Run preparation tasks'
+#  ansible.builtin.include_tasks:
+#    file: prepare.yml
+
+- name: 'Include : Run installation tasks'
+  ansible.builtin.include_tasks:
+    file: install.yml
+
+#- name: 'Include : Run clean-up tasks'
+#  ansible.builtin.include_tasks:
+#    file: cleanup.yml
