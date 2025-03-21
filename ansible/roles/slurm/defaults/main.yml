@@ -3,10 +3,42 @@ slurm_prefix: /usr
 slurm_download_dir: /tmp
 slurm_run_state_dir: "/run"
 slurm_local_state_dir: "/var"
-slurm_sys_config_dir: "/etc/slurm"
+slurm_sys_config_dir: "/etc"
 slurm_package_name: slurm-24.11.3
 slurm_package_extension: tar.bz2
 slurm_dependencies:
   - libpmix-dev
   - libdbus-1-dev
   - bzip2
+  - openssl
+  - openssl-devel
+  - pam-devel 
+  - numactl
+  - numactl-devel
+  - hwloc
+  - hwloc-devel 
+  - lua 
+  - lua-devel 
+  - readline-devel 
+  - rrdtool-devel 
+  - ncurses-devel 
+  - man2html 
+  - libibmad 
+  - libibumad
+
+
+
+
+
+  #- python3-firewall
+#slurm_master_node_firewall_config:
+#  - port: 6817/tcp
+#    zone: public
+#  - port: 6818/udp
+#    zone: public
+#  - port: 6818/tcp
+#    zone: public
+#  - port: 6819/udp
+#    zone: public
+#  - port: 6819/tcp
+#    zone: public

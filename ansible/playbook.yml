@@ -1,29 +1,27 @@
 ---
-- hosts: localhost
+- hosts: 
+    - hpc-master-nodes
+    - hpc-worker-nodes
   connection: local
   become: true
   tasks:
-    
     - name: 'Import : lustre-client role'
       include_role: 
         name: lustre-client
 
-    #- name: 'Import : awscli role'
-    #  include_role: 
-    #    name: awscli
-  #
-    #- name: 'Import : munge role'
-    #  include_role: 
-    #    name: munge
-  #
-    #- name: 'Import : openmpi role'
-    #  include_role: 
-    #    name: openmpi
-    #
-    #- name: 'Import : slurm role'
-    #  include_role: 
-    #    name: slurm
+    - name: 'Import : awscli role'
+      include_role: 
+        name: awscli
 
-#1) подключить LustreFSx 
-#2) синхронизировать время
-#3) запустить вычисление матрицы
+    - name: 'Import : munge role'
+      include_role: 
+        name: munge
+
+    - name: 'Import : openmpi role'
+      include_role: 
+        name: openmpi
+
+    - name: 'Import : slurm role'
+      include_role: 
+        name: slurm
+

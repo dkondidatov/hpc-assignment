@@ -1,8 +1,3 @@
-- name: 'Prepare : Update repositories cache'
-  become: true
-  ansible.builtin.apt:
-    update_cache: yes
-
 - name: 'Prepare : Remove old version of awscli'
   ansible.builtin.apt:
     name: awscli
@@ -11,6 +6,7 @@
 - name: 'Prepare : Make sure awscli dependencies are installed'
   become: true
   ansible.builtin.apt:
+    autoremove: true
     pkg:
     - groff
     - less

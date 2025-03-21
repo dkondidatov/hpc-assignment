@@ -45,46 +45,122 @@
     chdir: "{{ slurm_download_dir }}/{{ slurm_package_name }}"
     cmd: "make install"
 
-- name: 'Install : Set parameters for {{ slurm_sys_config_dir }}'
+- name: 'Install : Set parameters for /etc/slurm'
   become: true
   ansible.builtin.file:
-    path: '{{ slurm_sys_config_dir }}'
+    path: '/etc/slurm'
     state: directory
+
+- name: 'Install : Set parameters for /var/spool/slurm'
+  become: true
+  ansible.builtin.file:
+    path: '/var/spool/slurm'
+    state: directory
+    mode: '0755'
     owner: slurm
     group: slurm
-    mode: '0700'
-#
-#- name: 'Install : Set parameters for {{ munge_local_state_dir }}/lib/munge'
-#  become: true
-#  ansible.builtin.file:
-#    path: '{{ munge_local_state_dir }}/lib/munge'
-#    state: directory
-#    owner: munge
-#    group: munge
-#    mode: '0700'
-#
-#- name: 'Install : Set parameters for {{ munge_local_state_dir }}/log/munge'
-#  become: true
-#  ansible.builtin.file:
-#    path: '{{ munge_local_state_dir }}/log/munge'
-#    state: directory
-#    owner: munge
-#    group: munge
-#    mode: '0700'
-#
-#- name: 'Install : Set parameters for {{ munge_run_state_dir }}/munge'
-#  become: true
-#  ansible.builtin.file:
-#    path: '{{ munge_run_state_dir }}/munge'
-#    state: directory
-#    owner: munge
-#    group: munge
-#    mode: '0755'
-#
-#- name: 'Install : Start munge daemon'
-#  become: true
-#  ansible.builtin.systemd_service:
-#    name: munge
-#    daemon_reload: true
-#    state: started
-#    enabled: true
+
+- name: 'Install : Set parameters for /var/log/slurm'
+  become: true
+  ansible.builtin.file:
+    path: '/var/log/slurm'
+    state: directory
+    mode: '0755'
+    owner: slurm
+    group: slurm
+
+- name: 'Install : Template a slurm.conf to /etc/slurm/slurm.conf'
+  ansible.builtin.template:
+    src: slurm.conf.j2
+    dest: '/etc/slurm/slurm.conf'
+    mode: '0600'
+    owner: slurm
+    group: slurm
+
+- name: 'Install: Configure slurm for master node'
+  block:
+  - name: 'Install : Set parameters for /var/log/slurm/slurmd.log'
+    become: true
+    ansible.builtin.file:
+      path: '/var/log/slurm/slurmd.log'
+      state: touch
+      mode: '0640'
+      owner: slurm
+      group: slurm
+
+  - name: 'Install : Set parameters for /var/log/slurm/slurmctld.log'
+    become: true
+    ansible.builtin.file:
+      path: '/var/log/slurm/slurmctld.log'
+      state: touch
+      mode: '0640'
+      owner: slurm
+      group: slurm
+
+  - name: 'Install : Set parameters for /var/log/slurm/slurm_jobacct.log'
+    become: true
+    ansible.builtin.file:
+      path: '/var/log/slurm/slurm_jobacct.log'
+      state: touch
+      mode: '0640'
+      owner: slurm
+      group: slurm
+
+  - name: 'Install : Set parameters for /var/log/slurm/slurm_jobcomp.log'
+    become: true
+    ansible.builtin.file:
+      path: '/var/log/slurm/slurm_jobcomp.log'
+      state: touch
+      mode: '0640'
+      owner: slurm
+      group: slurm
+
+  - name: 'Install : Set parameters for /etc/slurm/slurmdbd.conf'
+    become: true
+    ansible.builtin.copy:
+      dest: '/etc/slurm/slurmdbd.conf'
+      mode: '0600'
+      owner: slurm
+      group: slurm
+      content: |
+        DbdAddr=localhost
+        DbdHost=localhost
+        DbdPort={{ mariadb_port }}
+        StoragePass={{ mariadb_users[0].password }}
+        StorageLoc=slurm_acct_db
+
+  - name: 'Install :Start and enable slurmdbd daemon'
+    become: true
+    ansible.builtin.systemd_service:
+      name: slurmdbd
+      state: started
+      enabled: true
+
+  - name: 'Install : Start and enable slurmctld daemon'
+    become: true
+    ansible.builtin.systemd_service:
+      name: slurmctld
+      state: started
+      enabled: true
+
+  when: hostvars[inventory_hostname].master_node is defined and hostvars[inventory_hostname].master_node
+
+- name: 'Install: Configure slurm for worker node'
+  block:
+  - name: 'Install : Set parameters for /var/log/slurm/slurmd.log'
+    become: true
+    ansible.builtin.file:
+      path: '/var/log/slurm/slurmd.log'
+      state: touch
+      mode: '0640'
+      owner: slurm
+      group: slurm
+
+  - name: 'Install : Enable slurm daemon'
+    become: true
+    ansible.builtin.systemd_service:
+      name: slurmd
+      state: started
+      enabled: enabled
+
+  when: hostvars[inventory_hostname].worker_node is defined and hostvars[inventory_hostname].worker_node

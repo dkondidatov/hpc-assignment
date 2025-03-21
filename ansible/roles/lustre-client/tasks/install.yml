@@ -16,17 +16,18 @@
       become: true
       ansible.builtin.shell:
       args:
-        cmd: gpg --dearmor /usr/share/keyrings/fsx-ubuntu-public-key.asc | tee /usr/share/keyrings/fsx-ubuntu-public-key.gpg >/dev/null
+        cmd: gpg --dearmor /usr/share/keyrings/fsx-ubuntu-public-key.asc
   when: apt_key.changed
 
 - name: 'Install : Add the FSx repository'
   ansible.builtin.apt_repository:
-    repo: "deb [signed-by=/usr/share/keyrings/fsx-ubuntu-public-key.gpg] https://fsx-lustre-client-repo.s3.amazonaws.com/ubuntu noble main"
+    repo: "deb [signed-by=/usr/share/keyrings/fsx-ubuntu-public-key.asc.gpg] https://fsx-lustre-client-repo.s3.amazonaws.com/ubuntu noble main"
     state: present
 
 - name: 'Install : Install Lustre-cluent'
   become: true
   ansible.builtin.apt:
+    autoremove: true
     pkg:
     - "lustre-client-modules-{{ aws_linux_version }}"
 

@@ -4,6 +4,6 @@ galaxy_info:
   license: BSD-3-Clause
   min_ansible_version: 2.1
   galaxy_tags: []
-dependencies: 
-  - fauust.mariadb
+dependencies: []
+  #- fauust.mariadb
 
