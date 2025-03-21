@@ -1,21 +1,49 @@
 ---
+- hosts:
+    - hpc_master_nodes
+  become: true
+  roles: 
+    - fauust.mariadb
+  vars: 
+    mariadb_port: 6819
+    mariadb_databases:
+      - name: slurm_acct_db
+        replicate: false
+    mariadb_users: 
+      - name: slurm
+        #host: 100.64.200.10
+        password: 1234
+        priv: "*.*:USAGE/slurm_acct_db.*:ALL"
+        state: present
+
 - hosts: 
     - hpc_master_nodes
     - hpc_worker_nodes
   become: true
+  vars: 
+    mariadb_port: 6819
+    mariadb_databases:
+      - name: slurm_acct_db
+        replicate: false
+    mariadb_users: 
+      - name: slurm
+        #host: 100.64.200.10
+        password: 1234
+        priv: "*.*:USAGE/slurm_acct_db.*:ALL"
+        state: present
   tasks:
     #- name: 'Import : lustre-client role'
     #  include_role: 
     #    name: lustre-client
-#
+    #
     #- name: 'Import : awscli role'
     #  include_role: 
     #    name: awscli
-#
+    #
     #- name: 'Import : munge role'
     #  include_role: 
     #    name: munge
-#
+    #
     #- name: 'Import : openmpi role'
     #  include_role: 
     #    name: openmpi
@@ -23,4 +51,7 @@
     - name: 'Import : slurm role'
       include_role: 
         name: slurm
+
+
+
 

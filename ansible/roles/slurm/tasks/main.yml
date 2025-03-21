@@ -7,6 +7,6 @@
   ansible.builtin.include_tasks:
     file: install.yml
 
-- name: 'Include : Run clean-up tasks'
-  ansible.builtin.include_tasks:
-    file: cleanup.yml
+#- name: 'Include : Run clean-up tasks'
+#  ansible.builtin.include_tasks:
+#    file: cleanup.yml

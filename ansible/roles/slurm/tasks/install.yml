@@ -66,6 +66,27 @@
     owner: slurm
     group: slurm
 
+- name: 'Install : Template a slurm.conf to /etc/slurm/slurm.conf'
+  ansible.builtin.template:
+    src: slurm.conf.j2
+    dest: '/etc/slurm/slurm.conf'
+    mode: '0600'
+    owner: slurm
+    group: slurm
+  notify: 
+    - 'Handlers : Restart systemd service: "slurmctld.service"'
+    - 'Handlers : Restart systemd service: "slurmdbd.service"'
+
+- name: 'Install : Set default environment variables'
+  become: true
+  ansible.builtin.copy:
+    dest: '/etc/default/slurmd'
+    mode: '0640'
+    owner: slurm
+    group: slurm
+    content: |
+      SLURM_CONF: "/etc/slurm/slurm.conf"
+
 - name: 'Install: Configure slurm for master node'
   block:
   - name: 'Install : Set parameters for /var/log/slurm/slurmd.log'
@@ -117,27 +138,39 @@
         DbdPort={{ mariadb_port }}
         StoragePass={{ mariadb_users[0].password }}
         StorageLoc=slurm_acct_db
+    notify: 
+    - 'Handlers : Restart systemd service: "slurmdbd.service"'
 
-  - name: 'Install : Template a slurm.conf to /etc/slurm/slurm.conf'
-    ansible.builtin.template:
-      src: slurm.conf.j2
-      dest: '/etc/slurm/slurm.conf'
-      mode: '0600'
+
+  - name: 'Install : Copy systemd service: "slurmdbd.service"'
+    become: true
+    ansible.builtin.copy:
+      dest: '/lib/systemd/system/slurmdbd.service'
+      src: '{{ slurm_download_dir }}/{{ slurm_package_name }}/etc/slurmdbd.service'
+      mode: '0640'
       owner: slurm
       group: slurm
-    delegate_to: inventory_hostname
+    notify: 
+    - 'Handlers : Restart systemd service: "slurmdbd.service"'
 
-  - name: 'Install : Synchronize slurm.conf between nodes'
-    ansible.posix.synchronize:
-      src: /etc/slurm/slurm.conf
-      dest: /etc/slurm/slurm.conf
-    delegate_to: inventory_hostname
+
+  - name: 'Install : Copy systemd service: "slurmctld.service"'
+    become: true
+    ansible.builtin.copy:
+      dest: '/lib/systemd/system/slurmctld.service'
+      src: '{{ slurm_download_dir }}/{{ slurm_package_name }}/etc/slurmctld.service'
+      mode: '0640'
+      owner: slurm
+      group: slurm
+    notify: 
+    - 'Handlers : Restart systemd service: "slurmctld.service"'
 
   - name: 'Install : Start and enable slurmdbd daemon'
     become: true
     ansible.builtin.systemd_service:
       name: slurmdbd
       state: started
+      daemon-reload: true
       enabled: true
 
   - name: 'Install : Start and enable slurmctld daemon'
@@ -145,18 +178,13 @@
     ansible.builtin.systemd_service:
       name: slurmctld
       state: started
+      daemon-reload: true
       enabled: true
 
   when: hostvars[inventory_hostname].master_node is defined and hostvars[inventory_hostname].master_node
 
 - name: 'Install: Configure slurm for worker node'
   block:
-
-
-
-
-
-
   - name: 'Install : Set parameters for /var/log/slurm/slurmd.log'
     become: true
     ansible.builtin.file:
@@ -166,11 +194,23 @@
       owner: slurm
       group: slurm
 
+  - name: 'Install : Copy systemd service: "slurmd.service"'
+    become: true
+    ansible.builtin.copy:
+      dest: '/lib/systemd/system/slurmd.service'
+      src: '{{ slurm_download_dir }}/{{ slurm_package_name }}/etc/slurmd.service'
+      mode: '0640'
+      owner: slurm
+      group: slurm
+    notify: 
+    - 'Handlers : Restart systemd service: "slurmd.service"'
+
   - name: 'Install : Enable slurm daemon'
     become: true
     ansible.builtin.systemd_service:
       name: slurmd
+      daemon-reload: true
       state: started
-      enabled: enabled
+      enabled: true
 
   when: hostvars[inventory_hostname].worker_node is defined and hostvars[inventory_hostname].worker_node
