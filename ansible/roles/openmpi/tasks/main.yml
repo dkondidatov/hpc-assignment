@@ -1,9 +1,9 @@
 ---
 - name: 'Prepare : Make sure openmpi dependencies are installed'
   become: true
-  autoremove: true
   ansible.builtin.apt:
     pkg: "{{ openmpi_dependencies }}"
+    autoremove: true
 
 - name: 'Install : Download openmpi-{{ openmpi_version }} package'
   ansible.builtin.get_url:

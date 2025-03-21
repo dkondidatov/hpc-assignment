@@ -1,7 +1,7 @@
 ---
 - hosts: 
-    - hpc-master-nodes
-    - hpc-worker-nodes
+    - hpc_master_nodes
+    - hpc_worker_nodes
   connection: local
   become: true
   tasks:
@@ -13,15 +13,15 @@
       include_role: 
         name: awscli
 
-    - name: 'Import : munge role'
-      include_role: 
-        name: munge
-
-    - name: 'Import : openmpi role'
-      include_role: 
-        name: openmpi
-
-    - name: 'Import : slurm role'
-      include_role: 
-        name: slurm
+    #- name: 'Import : munge role'
+    #  include_role: 
+    #    name: munge
+#
+    #- name: 'Import : openmpi role'
+    #  include_role: 
+    #    name: openmpi
+#
+    #- name: 'Import : slurm role'
+    #  include_role: 
+    #    name: slurm
 

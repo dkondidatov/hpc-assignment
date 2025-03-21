@@ -2,8 +2,10 @@
   ansible.builtin.file: 
     name: "{{ awscli_tmp_package_dir }}"
     state: absent 
+  ignore_errors: true
 
 - name: "Clean-up : Remove  package archive {{ awscli_package_name }}.{{ awscli_package_extension }}"
   ansible.builtin.file: 
     name: "{{ awscli_download_dir }}/{{ awscli_package_name }}.{{ awscli_package_extension }}"
     state: absent
+  ignore_errors: true

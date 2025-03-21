@@ -1,6 +1,6 @@
-hpc-master-nodes:
+hpc_master_nodes:
   hosts:
-    hpc-master-1:
+    hpc_master_1:
       ansible_host: 172.30.128.86
       mariadb_port: 6819
       mariadb_databases:
@@ -15,13 +15,13 @@ hpc-master-nodes:
   vars:
     master_node: true
 
-hpc-worker-nodes:
+hpc_worker_nodes:
   hosts:
-    hpc-worker-1:
+    hpc_worker_1:
       ansible_host: 172.30.128.68
-    hpc-worker-2:
+    hpc_worker_2:
       ansible_host: 172.30.128.70
-    hpc-worker-3:
+    hpc_worker_3:
       ansible_host: 172.30.128.73
   vars:
     worker_node: true

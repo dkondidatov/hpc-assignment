@@ -2,8 +2,10 @@
   ansible.builtin.file: 
     name: "{{ munge_download_dir }}/{{ munge_package_name }}"
     state: absent 
+  ignore_errors: true
 
 - name: "Clean-up : Remove  package archive {{ munge_package_name }}.{{ munge_package_extension }}"
   ansible.builtin.file: 
     name: "{{ munge_download_dir }}/{{ munge_package_name }}.{{ munge_package_extension }}"
     state: absent 
+  ignore_errors: true

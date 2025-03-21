@@ -17,6 +17,6 @@
 
 - name: 'Prepare : Make sure slurm dependencies are installed'
   become: true
-  autoremove: true
   ansible.builtin.apt:
+    autoremove: true
     pkg: "{{ slurm_dependencies }}"

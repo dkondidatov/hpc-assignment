@@ -1,0 +1,118 @@
+
+PLAY [hpc_master_nodes,hpc_worker_nodes] ***************************************
+
+TASK [Gathering Facts] *********************************************************
+ok: [hpc_master_1]
+ok: [hpc_worker_2]
+ok: [hpc_worker_3]
+ok: [hpc_worker_1]
+
+TASK [Import : lustre-client role] *********************************************
+included: lustre-client for hpc_master_1, hpc_worker_1, hpc_worker_2, hpc_worker_3
+
+TASK [lustre-client : Include : Run installation tasks] ************************
+included: /home/ubuntu/work/hpc-assignment/ansible/roles/lustre-client/tasks/install.yml for hpc_master_1, hpc_worker_1, hpc_worker_2, hpc_worker_3
+
+TASK [lustre-client : Install : Download the FSx signing key] ******************
+ok: [hpc_worker_1]
+ok: [hpc_worker_3]
+ok: [hpc_worker_2]
+ok: [hpc_master_1]
+
+TASK [lustre-client : Install : Remove previous dearmored key] *****************
+skipping: [hpc_master_1]
+skipping: [hpc_worker_1]
+skipping: [hpc_worker_2]
+skipping: [hpc_worker_3]
+
+TASK [lustre-client : Install : Dearmor FSx signing key] ***********************
+skipping: [hpc_master_1]
+skipping: [hpc_worker_1]
+skipping: [hpc_worker_2]
+skipping: [hpc_worker_3]
+
+TASK [lustre-client : Install : Add the FSx repository] ************************
+ok: [hpc_worker_1]
+ok: [hpc_worker_2]
+ok: [hpc_master_1]
+ok: [hpc_worker_3]
+
+TASK [lustre-client : Install : Install Lustre-cluent] *************************
+ok: [hpc_worker_2]
+ok: [hpc_master_1]
+ok: [hpc_worker_3]
+ok: [hpc_worker_1]
+
+TASK [lustre-client : Install : Mount lustre FSx] ******************************
+ok: [hpc_master_1]
+ok: [hpc_worker_1]
+ok: [hpc_worker_2]
+ok: [hpc_worker_3]
+
+TASK [Import : awscli role] ****************************************************
+included: awscli for hpc_master_1, hpc_worker_1, hpc_worker_2, hpc_worker_3
+
+TASK [awscli : Include : Run preparation tasks] ********************************
+included: /home/ubuntu/work/hpc-assignment/ansible/roles/awscli/tasks/prepare.yml for hpc_master_1, hpc_worker_1, hpc_worker_2, hpc_worker_3
+
+TASK [awscli : Prepare : Remove old version of awscli] *************************
+ok: [hpc_master_1]
+ok: [hpc_worker_3]
+ok: [hpc_worker_1]
+ok: [hpc_worker_2]
+
+TASK [awscli : Prepare : Make sure awscli dependencies are installed] **********
+ok: [hpc_worker_1]
+ok: [hpc_master_1]
+ok: [hpc_worker_3]
+ok: [hpc_worker_2]
+
+TASK [awscli : Include : Run installation tasks] *******************************
+included: /home/ubuntu/work/hpc-assignment/ansible/roles/awscli/tasks/install.yml for hpc_master_1, hpc_worker_1, hpc_worker_2, hpc_worker_3
+
+TASK [awscli : Install : Download latest awscli package] ***********************
+ok: [hpc_worker_2]
+ok: [hpc_worker_1]
+ok: [hpc_master_1]
+ok: [hpc_worker_3]
+
+TASK [awscli : Install : Create a directory /tmp/awscli] ***********************
+ok: [hpc_master_1]
+ok: [hpc_worker_2]
+ok: [hpc_worker_1]
+ok: [hpc_worker_3]
+
+TASK [awscli : Install : Unarchive awscli to /tmp/awscli] **********************
+ok: [hpc_worker_3]
+ok: [hpc_master_1]
+ok: [hpc_worker_1]
+ok: [hpc_worker_2]
+
+TASK [awscli : Install : Run awscli installation script] ***********************
+changed: [hpc_worker_3]
+changed: [hpc_worker_1]
+changed: [hpc_worker_2]
+changed: [hpc_master_1]
+
+TASK [awscli : Include : Run clean-up tasks] ***********************************
+included: /home/ubuntu/work/hpc-assignment/ansible/roles/awscli/tasks/cleanup.yml for hpc_master_1, hpc_worker_1, hpc_worker_2, hpc_worker_3
+
+TASK [awscli : Clean-up : Remove unarchived package /tmp/awscli] ***************
+fatal: [hpc_worker_2]: FAILED! => {"changed": false, "msg": "rmtree failed: [Errno 2] No such file or directory: 'textract'"}
+...ignoring
+fatal: [hpc_worker_3]: FAILED! => {"changed": false, "msg": "rmtree failed: [Errno 2] No such file or directory: 'ce'"}
+...ignoring
+fatal: [hpc_worker_1]: FAILED! => {"changed": false, "msg": "rmtree failed: [Errno 2] No such file or directory: 'create-db-subnet-group.rst'"}
+...ignoring
+changed: [hpc_master_1]
+
+TASK [awscli : Clean-up : Remove  package archive awscliv2.zip] ****************
+ok: [hpc_master_1]
+changed: [hpc_worker_1]
+ok: [hpc_worker_2]
+ok: [hpc_worker_3]
+
+TASK [Import : munge role] *****************************************************
+included: munge for hpc_master_1, hpc_worker_1, hpc_worker_2, hpc_worker_3
+
+TASK [munge : Include : Run preparation tasks] *********************************

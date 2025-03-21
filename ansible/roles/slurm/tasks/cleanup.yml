@@ -2,8 +2,10 @@
   ansible.builtin.file: 
     name: "{{ slurm_download_dir }}/{{ slurm_package_name }}.{{ slurm_package_extension }}"
     state: absent 
+  ignore_errors: true
 
 - name: "Clean-up : Remove unarchived package {{ slurm_download_dir }}/{{ slurm_package_name }}"
   ansible.builtin.file: 
     name: "{{ slurm_download_dir }}/{{ slurm_package_name }}"
     state: absent 
+  ignore_errors: true
