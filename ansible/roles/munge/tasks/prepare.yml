@@ -12,7 +12,7 @@
     name: munge    
     group: munge
     shell: /usr/sbin/nologin
-    create_home: false
+    create_home: true
     system: true
 
 - name: 'Prepare : Make sure munge dependencies are installed'

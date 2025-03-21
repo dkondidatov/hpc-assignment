@@ -64,7 +64,7 @@
     owner: munge
     group: munge
     mode: '0700'
-
+  notify: "Handlers : Restart munge daemon"
 
 - name: 'Install : Set parameters for {{ munge_sys_config_dir }}/munge'
   become: true
