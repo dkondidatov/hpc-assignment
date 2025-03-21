@@ -32,8 +32,8 @@
 
 - name: 'Install : Mount lustre FSx'
   ansible.posix.mount:
-    path: /mnt/fsx
-    src: fs-08dbdf2c19b7d999b.fsx.eu-central-1.amazonaws.com@tcp:/lustre-dkondidatov
+    path: "{{ lustre_mount_path }}"
+    src: "{{ lustre_mount_endpoint }}"
     fstype: lustre
     opts: realtime,flock
     state: present
