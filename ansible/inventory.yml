@@ -12,6 +12,8 @@ hpc_master_nodes:
           password: 1234
           priv: "*.*:USAGE/slurm_acct_db.*:ALL"
           state: present
+      roles:
+        - fauust.mariadb
   vars:
     master_node: true
 

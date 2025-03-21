@@ -9,20 +9,20 @@
 
 - name: 'Install : Unarchive slurm to "{{ slurm_download_dir }}"'
   become: true
-  become_user: slurm
-  vars: 
-    ansible_shell_allow_world_readable_temp: true
   ansible.builtin.unarchive:
     src: "{{ slurm_download_dir }}/{{ slurm_package_name }}.{{ slurm_package_extension }}"
     dest: "{{ slurm_download_dir }}"
     owner: "slurm"
     group: "slurm"
 
+- name: "Clean-up : Remove package archive {{ slurm_download_dir }}/{{ slurm_package_name }}.{{ slurm_package_extension }}"
+  ansible.builtin.file: 
+    name: "{{ slurm_download_dir }}/{{ slurm_package_name }}.{{ slurm_package_extension }}"
+    state: absent 
+  ignore_errors: true
+
 - name: 'Install : Run slurm configure script'
   become: true
-  become_user: slurm
-  vars: 
-    ansible_shell_allow_world_readable_temp: true
   ansible.builtin.shell:
   args:
     chdir: "{{ slurm_download_dir }}/{{ slurm_package_name }}"
@@ -30,9 +30,6 @@
 
 - name: 'Install : Run slurm make script'
   become: true
-  become_user: slurm
-  vars: 
-    ansible_shell_allow_world_readable_temp: true
   ansible.builtin.shell:
   args:
     chdir: "{{ slurm_download_dir }}/{{ slurm_package_name }}"
@@ -66,14 +63,6 @@
     path: '/var/log/slurm'
     state: directory
     mode: '0755'
-    owner: slurm
-    group: slurm
-
-- name: 'Install : Template a slurm.conf to /etc/slurm/slurm.conf'
-  ansible.builtin.template:
-    src: slurm.conf.j2
-    dest: '/etc/slurm/slurm.conf'
-    mode: '0600'
     owner: slurm
     group: slurm
 
@@ -129,7 +118,22 @@
         StoragePass={{ mariadb_users[0].password }}
         StorageLoc=slurm_acct_db
 
-  - name: 'Install :Start and enable slurmdbd daemon'
+  - name: 'Install : Template a slurm.conf to /etc/slurm/slurm.conf'
+    ansible.builtin.template:
+      src: slurm.conf.j2
+      dest: '/etc/slurm/slurm.conf'
+      mode: '0600'
+      owner: slurm
+      group: slurm
+    delegate_to: inventory_hostname
+
+  - name: 'Install : Synchronize slurm.conf between nodes'
+    ansible.posix.synchronize:
+      src: /etc/slurm/slurm.conf
+      dest: /etc/slurm/slurm.conf
+    delegate_to: inventory_hostname
+
+  - name: 'Install : Start and enable slurmdbd daemon'
     become: true
     ansible.builtin.systemd_service:
       name: slurmdbd
@@ -147,6 +151,12 @@
 
 - name: 'Install: Configure slurm for worker node'
   block:
+
+
+
+
+
+
   - name: 'Install : Set parameters for /var/log/slurm/slurmd.log'
     become: true
     ansible.builtin.file:

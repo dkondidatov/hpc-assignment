@@ -10,21 +10,20 @@ slurm_dependencies:
   - libpmix-dev
   - libdbus-1-dev
   - bzip2
-  - openssl
-  - openssl-devel
-  - pam-devel 
+  - libssl-dev
+  - libpam0g
   - numactl
-  - numactl-devel
+  - libnuma-dev
   - hwloc
-  - hwloc-devel 
-  - lua 
-  - lua-devel 
-  - readline-devel 
-  - rrdtool-devel 
-  - ncurses-devel 
+  - libhwloc-dev
+  - lua5.4 
+  - liblua5.4-dev
+  - libreadline-dev
+  - librrd-dev
+  - libncurses-dev
   - man2html 
-  - libibmad 
-  - libibumad
+  - libibmad-dev
+  - libibumad-dev
 
 
 
