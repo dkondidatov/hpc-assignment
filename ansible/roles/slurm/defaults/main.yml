@@ -24,6 +24,7 @@ slurm_dependencies:
   - man2html 
   - libibmad-dev
   - libibumad-dev
+  - mailutils
 
 
 

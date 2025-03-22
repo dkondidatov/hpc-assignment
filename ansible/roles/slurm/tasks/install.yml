@@ -47,13 +47,25 @@
   ansible.builtin.file:
     path: '/etc/slurm'
     state: directory
+    mode: '0755'
+    owner: slurm
+    group: slurm
 
 - name: 'Install : Set parameters for /var/spool/slurm'
   become: true
   ansible.builtin.file:
     path: '/var/spool/slurm'
     state: directory
-    mode: '0755'
+    mode: '0750'
+    owner: slurm
+    group: slurm
+
+- name: 'Install : Set parameters for /var/spool/slurmctld'
+  become: true
+  ansible.builtin.file:
+    path: '/var/spool/slurmctld'
+    state: directory
+    mode: '0750'
     owner: slurm
     group: slurm
 
@@ -70,25 +82,33 @@
   ansible.builtin.template:
     src: slurm.conf.j2
     dest: '/etc/slurm/slurm.conf'
-    mode: '0600'
+    mode: '0644'
     owner: slurm
     group: slurm
   notify: 
     - 'Handlers : Restart systemd service: "slurmctld.service"'
     - 'Handlers : Restart systemd service: "slurmdbd.service"'
-
-- name: 'Install : Set default environment variables'
-  become: true
-  ansible.builtin.copy:
-    dest: '/etc/default/slurmd'
-    mode: '0640'
-    owner: slurm
-    group: slurm
-    content: |
-      SLURM_CONF: "/etc/slurm/slurm.conf"
+    - 'Handlers : Restart systemd service: "slurmd.service"'
 
 - name: 'Install: Configure slurm for master node'
   block:
+
+  - name: 'Install : Set parameters for /etc/slurm/slurmdbd.conf'
+    become: true
+    ansible.builtin.copy:
+      dest: '/etc/slurm/slurmdbd.conf'
+      mode: '0640'
+      owner: slurm
+      group: slurm
+      content: |
+        DbdAddr=localhost
+        DbdHost=localhost
+        DbdPort={{ mariadb_port }}
+        StoragePass={{ mariadb_users[0].password }}
+        StorageLoc=slurm_acct_db
+    notify: 
+    - 'Handlers : Restart systemd service: "slurmdbd.service"'
+
   - name: 'Install : Set parameters for /var/log/slurm/slurmd.log'
     become: true
     ansible.builtin.file:
@@ -125,28 +145,11 @@
       owner: slurm
       group: slurm
 
-  - name: 'Install : Set parameters for /etc/slurm/slurmdbd.conf'
-    become: true
-    ansible.builtin.copy:
-      dest: '/etc/slurm/slurmdbd.conf'
-      mode: '0600'
-      owner: slurm
-      group: slurm
-      content: |
-        DbdAddr=localhost
-        DbdHost=localhost
-        DbdPort={{ mariadb_port }}
-        StoragePass={{ mariadb_users[0].password }}
-        StorageLoc=slurm_acct_db
-    notify: 
-    - 'Handlers : Restart systemd service: "slurmdbd.service"'
-
-
   - name: 'Install : Copy systemd service: "slurmdbd.service"'
     become: true
-    ansible.builtin.copy:
+    ansible.builtin.template:
       dest: '/lib/systemd/system/slurmdbd.service'
-      src: '{{ slurm_download_dir }}/{{ slurm_package_name }}/etc/slurmdbd.service'
+      src: 'slurmdbd.service.j2'
       mode: '0640'
       owner: slurm
       group: slurm
@@ -156,9 +159,9 @@
 
   - name: 'Install : Copy systemd service: "slurmctld.service"'
     become: true
-    ansible.builtin.copy:
+    ansible.builtin.template:
       dest: '/lib/systemd/system/slurmctld.service'
-      src: '{{ slurm_download_dir }}/{{ slurm_package_name }}/etc/slurmctld.service'
+      src: 'slurmctld.service.j2'
       mode: '0640'
       owner: slurm
       group: slurm
@@ -194,11 +197,11 @@
       owner: slurm
       group: slurm
 
-  - name: 'Install : Copy systemd service: "slurmd.service"'
+  - name: 'Install : Template systemd service: "slurmd.service"'
     become: true
-    ansible.builtin.copy:
+    ansible.builtin.template:
       dest: '/lib/systemd/system/slurmd.service'
-      src: '{{ slurm_download_dir }}/{{ slurm_package_name }}/etc/slurmd.service'
+      src: 'slurmd.service.j2'
       mode: '0640'
       owner: slurm
       group: slurm

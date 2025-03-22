@@ -4,6 +4,7 @@
       name: slurmdbd
       state: restarted
       daemon-reload: true
+    when: inventory_hostname in groups["hpc_master_nodes"]
 
   - name: 'Handlers : Restart systemd service: "slurmctld.service"'
     become: true
@@ -11,6 +12,7 @@
       name: slurmctld
       state: restarted
       daemon-reload: true
+    when: inventory_hostname in groups["hpc_master_nodes"]
 
   - name: 'Handlers : Restart systemd service: "slurmd.service"'
     become: true
@@ -18,3 +20,4 @@
       name: slurmd
       state: restarted
       daemon-reload: true
+    when: inventory_hostname in groups["hpc_worker_nodes"]

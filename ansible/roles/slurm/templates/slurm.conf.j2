@@ -3,7 +3,7 @@
 # See the slurm.conf man page for more information.
 #
 ClusterName=hpc-dkondidatov
-SlurmctldHost=ip-172-30-128-86.eu-central-1.compute.internal(172.30.128.86)
+SlurmctldHost=ip-172-30-128-86(172.30.128.86)
 #SlurmctldHost=
 #
 AuthType=auth/munge
@@ -124,9 +124,9 @@ JobCompType=jobcomp/none
 JobAcctGatherFrequency=30
 #JobAcctGatherType=
 SlurmctldDebug=info
-SlurmctldLogFile=/var/log/slurmctld.log
+SlurmctldLogFile=/var/log/slurm/slurmctld.log
 SlurmdDebug=info
-SlurmdLogFile=/var/log/slurmd.log
+SlurmdLogFile=/var/log/slurm/slurmd.log
 #SlurmSchedLogFile=
 #SlurmSchedLogLevel=
 #DebugFlags=
@@ -145,11 +145,9 @@ SlurmdLogFile=/var/log/slurmd.log
 #
 #
 # COMPUTE NODES
-NodeName=linux[1-32] CPUs=2 State=UNKNOWN
-PartitionName=debug Nodes=ALL Default=YES MaxTime=INFINITE State=UP
 {% for host in hostvars.values() %}
 {% if host.worker_node is defined and host.worker_node == true %}
 NodeName={{ host.ansible_facts.fqdn }} NodeAddr={{ host.ansible_host }} Procs={{ host.ansible_facts.processor_vcpus }} State=UNKNOWN
 {% endif %}
 {% endfor %}
-PartitionName=debug Nodes=ALL Default=YES MaxTime=INFINITE State=UP
+PartitionName=normal Nodes=ALL Default=YES MaxTime=INFINITE State=UP
