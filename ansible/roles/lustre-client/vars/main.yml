@@ -1,4 +1,4 @@
 ---
 # vars file for lustre-client
-lustre_mount_endpoint: fs-08dbdf2c19b7d999b.fsx.eu-central-1.amazonaws.com@tcp:/lustre-dkondidatov
+lustre_mount_endpoint: fs-08dbdf2c19b7d999b.fsx.eu-central-1.amazonaws.com@tcp:/fsx
 lustre_mount_path: /mnt/fsx

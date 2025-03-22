@@ -26,7 +26,7 @@
   ansible.builtin.shell:
   args:
     chdir: "{{ slurm_download_dir }}/{{ slurm_package_name }}"
-    cmd: "./configure --prefix={{ slurm_prefix }}"
+    cmd: "./configure --prefix={{ slurm_prefix }} --with-pmix=/usr/lib/x86_64-linux-gnu/pmix2"
 
 - name: 'Install : Run slurm make script'
   become: true
@@ -78,6 +78,18 @@
     owner: slurm
     group: slurm
 
+- name: 'Install : Template a slurm.conf to "/etc/slurm/cgroup.conf"'
+  ansible.builtin.template:
+    src: cgroup.conf.j2
+    dest: '/etc/slurm/cgroup.conf'
+    mode: '0644'
+    owner: slurm
+    group: slurm
+  notify: 
+    - 'Handlers : Restart systemd service: "slurmctld.service"'
+    - 'Handlers : Restart systemd service: "slurmdbd.service"'
+    - 'Handlers : Restart systemd service: "slurmd.service"'
+
 - name: 'Install : Template a slurm.conf to /etc/slurm/slurm.conf'
   ansible.builtin.template:
     src: slurm.conf.j2
@@ -95,17 +107,12 @@
 
   - name: 'Install : Set parameters for /etc/slurm/slurmdbd.conf'
     become: true
-    ansible.builtin.copy:
+    ansible.builtin.template:
       dest: '/etc/slurm/slurmdbd.conf'
+      src: 'slurmdbd.service.j2'
       mode: '0640'
       owner: slurm
       group: slurm
-      content: |
-        DbdAddr=localhost
-        DbdHost=localhost
-        DbdPort={{ mariadb_port }}
-        StoragePass={{ mariadb_users[0].password }}
-        StorageLoc=slurm_acct_db
     notify: 
     - 'Handlers : Restart systemd service: "slurmdbd.service"'
 
@@ -142,6 +149,15 @@
       path: '/var/log/slurm/slurm_jobcomp.log'
       state: touch
       mode: '0640'
+      owner: slurm
+      group: slurm
+
+  - name: 'Install : Set parameters for "{{ lustre_mount_path }}/slurm"'
+    become: true
+    ansible.builtin.file:
+      path: '/mnt/fsx/slurm'
+      state: directory
+      mode: '0777'
       owner: slurm
       group: slurm
 

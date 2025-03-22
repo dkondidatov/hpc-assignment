@@ -16,6 +16,7 @@ ExecStart=/usr/sbin/slurmdbd -D -s $SLURMDBD_OPTIONS -f /etc/slurm/slurmdbd.conf
 ExecReload=/bin/kill -HUP $MAINPID
 LimitNOFILE=65536
 TasksMax=infinity
+#PIDFile=/run/slurm/slurmdbd.pid
 
 # Uncomment the following lines to disable logging through journald.
 # NOTE: It may be preferable to set these through an override file instead.

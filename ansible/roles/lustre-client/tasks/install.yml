@@ -36,5 +36,14 @@
     path: "{{ lustre_mount_path }}"
     src: "{{ lustre_mount_endpoint }}"
     fstype: lustre
-    opts: realtime,flock
-    state: present
+    opts: defaults,relatime,flock,_netdev,x-systemd.automount,x-systemd.requires=systemd-networkd-wait-online.service
+    state: mounted
+
+- name: 'Install : Set parameters for "{{ lustre_mount_path }}/slurm"'
+  become: true
+  ansible.builtin.file:
+    path: '{{ lustre_mount_path }}/slurm'
+    state: directory
+    mode: '0750'
+    owner: slurm
+    group: slurm

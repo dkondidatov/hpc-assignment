@@ -26,7 +26,7 @@ AuthType=auth/munge
 #MaxJobCount=10000
 #MaxStepCount=40000
 #MaxTasksPerNode=512
-#MpiDefault=
+MpiDefault=pmix
 #MpiParams=ports=#-#
 #PluginDir=
 #PlugStackConfig=
@@ -122,7 +122,7 @@ JobCompType=jobcomp/none
 #JobCompUser=
 #JobContainerType=
 JobAcctGatherFrequency=30
-#JobAcctGatherType=
+JobAcctGatherType=jobacct_gather/cgroup
 SlurmctldDebug=info
 SlurmctldLogFile=/var/log/slurm/slurmctld.log
 SlurmdDebug=info
@@ -147,7 +147,7 @@ SlurmdLogFile=/var/log/slurm/slurmd.log
 # COMPUTE NODES
 {% for host in hostvars.values() %}
 {% if host.worker_node is defined and host.worker_node == true %}
-NodeName={{ host.ansible_facts.fqdn }} NodeAddr={{ host.ansible_host }} Procs={{ host.ansible_facts.processor_vcpus }} State=UNKNOWN
+NodeName={{ host.ansible_facts.fqdn }} NodeAddr={{ host.ansible_host }} Procs={{ host.ansible_facts.processor_vcpus }} RealMemory={{ host.ansible_facts.memtotal_mb - (host.ansible_facts.memtotal_mb // 100 * 20)}} State=UNKNOWN
 {% endif %}
 {% endfor %}
-PartitionName=normal Nodes=ALL Default=YES MaxTime=INFINITE State=UP
+PartitionName=normal Nodes=ALL Default=YES MaxTime=INFINITE State=UP Default=YES

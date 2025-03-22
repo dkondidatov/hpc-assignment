@@ -1,0 +1,12 @@
+AuthType=auth/munge
+DbdAddr=localhost
+DbdHost=localhost
+DbdPort={{ mariadb_port }}
+SlurmUser=slurm
+StorageType=accounting_storage/mysql
+StorageUser=slurm
+StoragePass={{ mariadb_users[0].password }}
+StorageHost=localhost
+StorageLoc=slurm_acct_db
+LogFile=/var/log/slurm/slurmdbd.log
+#PidFile=/run/slurm/slurmdbd.pid
