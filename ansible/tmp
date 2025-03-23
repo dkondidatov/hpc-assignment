@@ -14,10 +14,28 @@
         innodb_lock_wait_timeout=900
 
 
-SrunPortRange=60001-63000 to slurm.conf on all nodes and opened that ports in firewall-cmd
+#SrunPortRange=60001-63000 to slurm.conf on all nodes and opened that ports in firewall-cmd
+#
+#firewall-cmd --add-port=60001-63000/udp
+#
+#firewall-cmd --add-port=60001-63000/tcp
+#
+#firewall-cmd --runtime-to-permanent 
 
-firewall-cmd --add-port=60001-63000/udp
 
-firewall-cmd --add-port=60001-63000/tcp
 
-firewall-cmd --runtime-to-permanent 
+
+
+
+  #- python3-firewall
+#slurm_master_node_firewall_config:
+#  - port: 6817/tcp
+#    zone: public
+#  - port: 6818/udp
+#    zone: public
+#  - port: 6818/tcp
+#    zone: public
+#  - port: 6819/udp
+#    zone: public
+#  - port: 6819/tcp
+#    zone: public

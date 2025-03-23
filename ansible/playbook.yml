@@ -5,13 +5,13 @@
   roles: 
     - fauust.mariadb
   vars: 
-    mariadb_port: 6819
+    mariadb_port: 3306
+    mariadb_bind_address: 127.0.0.1
     mariadb_databases:
       - name: slurm_acct_db
         replicate: false
     mariadb_users: 
       - name: slurm
-        #host: 100.64.200.10
         password: 1234
         priv: "*.*:USAGE/slurm_acct_db.*:ALL"
         state: present
@@ -20,17 +20,6 @@
     - hpc_master_nodes
     - hpc_worker_nodes
   become: true
-  vars: 
-    mariadb_port: 6819
-    mariadb_databases:
-      - name: slurm_acct_db
-        replicate: false
-    mariadb_users: 
-      - name: slurm
-        #host: 100.64.200.10
-        password: 1234
-        priv: "*.*:USAGE/slurm_acct_db.*:ALL"
-        state: present
   tasks:
     #- name: 'Import : lustre-client role'
     #  include_role: 

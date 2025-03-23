@@ -2,113 +2,118 @@
   become: true
   ansible.builtin.get_url:
     url: "{{ slurm_download_url }}"
-    dest: "{{ slurm_download_dir }}"
+    dest: "{{ slurm_temp_download_dir }}"
     owner: "slurm"
     group: "slurm"
     mode: '0644'
+  when: not slurm_skip_installation
 
-- name: 'Install : Unarchive slurm to "{{ slurm_download_dir }}"'
+- name: 'Install : Unarchive slurm in "{{ slurm_temp_download_dir }}/{{ slurm_package_name }}"'
   become: true
   ansible.builtin.unarchive:
-    src: "{{ slurm_download_dir }}/{{ slurm_package_name }}.{{ slurm_package_extension }}"
-    dest: "{{ slurm_download_dir }}"
+    src: "{{ slurm_temp_download_dir }}/{{ slurm_package_fullname }}"
+    dest: "{{ slurm_temp_download_dir }}"
     owner: "slurm"
     group: "slurm"
+  when: not slurm_skip_installation
 
-- name: "Clean-up : Remove package archive {{ slurm_download_dir }}/{{ slurm_package_name }}.{{ slurm_package_extension }}"
+- name: 'Clean-up : Remove package archive "{{ slurm_temp_download_dir }}/{{ slurm_package_fullname }}"'
   ansible.builtin.file: 
-    name: "{{ slurm_download_dir }}/{{ slurm_package_name }}.{{ slurm_package_extension }}"
+    name: "{{ slurm_temp_download_dir }}/{{ slurm_package_fullname }}"
     state: absent 
   ignore_errors: true
+  when: not slurm_skip_installation
 
 - name: 'Install : Run slurm configure script'
   become: true
   ansible.builtin.shell:
   args:
-    chdir: "{{ slurm_download_dir }}/{{ slurm_package_name }}"
-    cmd: "./configure --prefix={{ slurm_prefix }} --with-pmix=/usr/lib/x86_64-linux-gnu/pmix2"
+    chdir: "{{ slurm_temp_download_dir }}/{{ slurm_package_name }}"
+    cmd: "./configure --prefix={{ slurm_prefix }} {{ slurm_configure_args }}"
+  when: not slurm_skip_installation
 
 - name: 'Install : Run slurm make script'
   become: true
   ansible.builtin.shell:
   args:
-    chdir: "{{ slurm_download_dir }}/{{ slurm_package_name }}"
+    chdir: "{{ slurm_temp_download_dir }}/{{ slurm_package_name }}"
     cmd: "make"
+  when: not slurm_skip_installation
 
 - name: 'Install : Run slurm make install script'
   become: true
   ansible.builtin.shell:
   args:
-    chdir: "{{ slurm_download_dir }}/{{ slurm_package_name }}"
+    chdir: "{{ slurm_temp_download_dir }}/{{ slurm_package_name }}"
     cmd: "make install"
+  when: not slurm_skip_installation
 
-- name: 'Install : Set parameters for /etc/slurm'
+- name: 'Install : Set parameters for "{{ slurm_config_dir }}"'
   become: true
   ansible.builtin.file:
-    path: '/etc/slurm'
+    path: '{{ slurm_config_dir }}'
     state: directory
     mode: '0755'
     owner: slurm
     group: slurm
 
-- name: 'Install : Set parameters for /var/spool/slurm'
+- name: 'Install : Set parameters for "{{ slurm_spool_dir }}/slurm"'
   become: true
   ansible.builtin.file:
-    path: '/var/spool/slurm'
+    path: '{{ slurm_spool_dir }}/slurm'
     state: directory
     mode: '0750'
     owner: slurm
     group: slurm
 
-- name: 'Install : Set parameters for /var/spool/slurmctld'
+- name: 'Install : Set parameters for "{{ slurm_spool_dir }}/slurmctld"'
   become: true
   ansible.builtin.file:
-    path: '/var/spool/slurmctld'
+    path: '"{{ slurm_spool_dir }}/slurmctld"'
     state: directory
     mode: '0750'
     owner: slurm
     group: slurm
+  when: inventory_hostname in groups["hpc_master_nodes"]
 
-- name: 'Install : Set parameters for /var/log/slurm'
+- name: 'Install : Set parameters for "{{ slurm_logs_dir }}"'
   become: true
   ansible.builtin.file:
-    path: '/var/log/slurm'
+    path: '{{ slurm_logs_dir }}'
     state: directory
     mode: '0755'
     owner: slurm
     group: slurm
 
-- name: 'Install : Template a slurm.conf to "/etc/slurm/cgroup.conf"'
+- name: 'Install : Template a slurm.conf to "{{ slurm_config_dir }}/cgroup.conf"'
   ansible.builtin.template:
     src: cgroup.conf.j2
-    dest: '/etc/slurm/cgroup.conf'
+    dest: '{{ slurm_config_dir }}/cgroup.conf'
     mode: '0644'
     owner: slurm
     group: slurm
   notify: 
     - 'Handlers : Restart systemd service: "slurmctld.service"'
-    - 'Handlers : Restart systemd service: "slurmdbd.service"'
     - 'Handlers : Restart systemd service: "slurmd.service"'
 
-- name: 'Install : Template a slurm.conf to /etc/slurm/slurm.conf'
+- name: 'Install : Template a slurm.conf to "{{ slurm_config_dir }}/slurm.conf"'
   ansible.builtin.template:
     src: slurm.conf.j2
-    dest: '/etc/slurm/slurm.conf'
+    dest: '{{ slurm_config_dir }}/slurm.conf'
     mode: '0644'
     owner: slurm
     group: slurm
   notify: 
     - 'Handlers : Restart systemd service: "slurmctld.service"'
-    - 'Handlers : Restart systemd service: "slurmdbd.service"'
     - 'Handlers : Restart systemd service: "slurmd.service"'
 
 - name: 'Install: Configure slurm for master node'
   block:
 
-  - name: 'Install : Set parameters for /etc/slurm/slurmdbd.conf'
+  - name: 'Install : Set parameters for "{{ slurm_config_dir }}/slurmdbd.conf"'
     become: true
     ansible.builtin.template:
-      dest: '/etc/slurm/slurmdbd.conf'
+      dest: '{{ slurm_config_dir }}/slurmdbd.conf'
       src: 'slurmdbd.service.j2'
       mode: '0640'
       owner: slurm
@@ -116,37 +121,37 @@
     notify: 
     - 'Handlers : Restart systemd service: "slurmdbd.service"'
 
-  - name: 'Install : Set parameters for /var/log/slurm/slurmd.log'
+  - name: 'Install : Set parameters for "{{ slurm_logs_dir }}/slurmd.log"'
     become: true
     ansible.builtin.file:
-      path: '/var/log/slurm/slurmd.log'
+      path: '{{ slurm_logs_dir }}/slurmd.log'
       state: touch
       mode: '0640'
       owner: slurm
       group: slurm
 
-  - name: 'Install : Set parameters for /var/log/slurm/slurmctld.log'
+  - name: 'Install : Set parameters for "{{ slurm_logs_dir }}/slurmctld.log"'
     become: true
     ansible.builtin.file:
-      path: '/var/log/slurm/slurmctld.log'
+      path: '{{ slurm_logs_dir }}/slurmctld.log'
       state: touch
       mode: '0640'
       owner: slurm
       group: slurm
 
-  - name: 'Install : Set parameters for /var/log/slurm/slurm_jobacct.log'
+  - name: 'Install : Set parameters for "{{ slurm_logs_dir }}/slurm_jobacct.log"'
     become: true
     ansible.builtin.file:
-      path: '/var/log/slurm/slurm_jobacct.log'
+      path: '{{ slurm_logs_dir }}/slurm_jobacct.log'
       state: touch
       mode: '0640'
       owner: slurm
       group: slurm
 
-  - name: 'Install : Set parameters for /var/log/slurm/slurm_jobcomp.log'
+  - name: 'Install : Set parameters for "{{ slurm_logs_dir }}/slurm_jobcomp.log"'
     become: true
     ansible.builtin.file:
-      path: '/var/log/slurm/slurm_jobcomp.log'
+      path: '{{ slurm_logs_dir }}/slurm_jobcomp.log'
       state: touch
       mode: '0640'
       owner: slurm
@@ -155,7 +160,7 @@
   - name: 'Install : Set parameters for "{{ lustre_mount_path }}/slurm"'
     become: true
     ansible.builtin.file:
-      path: '/mnt/fsx/slurm'
+      path: '{{ lustre_mount_path }}/slurm'
       state: directory
       mode: '0777'
       owner: slurm
@@ -204,10 +209,10 @@
 
 - name: 'Install: Configure slurm for worker node'
   block:
-  - name: 'Install : Set parameters for /var/log/slurm/slurmd.log'
+  - name: 'Install : Set parameters for "{{ slurm_logs_dir }}/slurmd.log"'
     become: true
     ansible.builtin.file:
-      path: '/var/log/slurm/slurmd.log'
+      path: '{{ slurm_logs_dir }}/slurmd.log'
       state: touch
       mode: '0640'
       owner: slurm
