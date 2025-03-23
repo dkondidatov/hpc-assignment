@@ -32,7 +32,8 @@ Example Playbook
   tasks:
     - name: 'Import : openmpi role'
       include_role: 
-        name: openmpi```
+        name: openmpi
+```
 
 License
 -------

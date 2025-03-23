@@ -6,7 +6,8 @@ This role will install and configure munge application.
 Requirements
 ------------
 
-awscli role must be installed
+Roles: 
+- awscli
 
 Role Variables
 --------------
