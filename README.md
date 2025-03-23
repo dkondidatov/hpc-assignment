@@ -38,7 +38,7 @@ sudo systemctl status slurmd.service
 # Run on master nodes
 export SLURM_CONF="/etc/slurm/slurm.conf"
 sinfo 
-sudo systemctl status slurmctl.service
+sudo systemctl status slurmctld.service
 sudo systemctl status slurmdbd.service
 ```
 7) Build С-code

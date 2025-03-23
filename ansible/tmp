@@ -22,11 +22,6 @@
 #
 #firewall-cmd --runtime-to-permanent 
 
-
-
-
-
-
   #- python3-firewall
 #slurm_master_node_firewall_config:
 #  - port: 6817/tcp
