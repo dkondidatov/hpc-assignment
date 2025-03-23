@@ -24,14 +24,22 @@
   ignore_errors: true
   when: not slurm_skip_installation
 
-- name: 'Install : Run slurm configure script'
+- name: 'Install : Run slurm configure script for master nodes'
   become: true
   ansible.builtin.shell:
   args:
     chdir: "{{ slurm_temp_download_dir }}/{{ slurm_package_name }}"
-    cmd: "./configure --prefix={{ slurm_prefix }} {{ slurm_configure_args }}"
-  when: not slurm_skip_installation
+    cmd: "./configure --prefix={{ slurm_prefix }} {{ slurm_master_configure_args }}"
+  when: not slurm_skip_installation and inventory_hostname in groups["hpc_master_nodes"]
 
+- name: 'Install : Run slurm configure script for worker nodes'
+  become: true
+  ansible.builtin.shell:
+  args:
+    chdir: "{{ slurm_temp_download_dir }}/{{ slurm_package_name }}"
+    cmd: "./configure --prefix={{ slurm_prefix }} {{ slurm_worker_configure_args }}"
+  when: not slurm_skip_installation and inventory_hostname in groups["hpc_worker_nodes"]
+  
 - name: 'Install : Run slurm make script'
   become: true
   ansible.builtin.shell:
@@ -54,6 +62,15 @@
     path: '{{ slurm_config_dir }}'
     state: directory
     mode: '0755'
+    owner: slurm
+    group: slurm
+
+- name: 'Install : Set parameters for "{{ slurm_runstate_dir }}/slurm"'
+  become: true
+  ansible.builtin.file:
+    path: '{{ slurm_runstate_dir }}/slurm'
+    state: directory
+    mode: '0750'
     owner: slurm
     group: slurm
 
@@ -114,12 +131,21 @@
     become: true
     ansible.builtin.template:
       dest: '{{ slurm_config_dir }}/slurmdbd.conf'
-      src: 'slurmdbd.service.j2'
-      mode: '0640'
+      src: 'slurmdbd.conf.j2'
+      mode: '600'
       owner: slurm
       group: slurm
     notify: 
     - 'Handlers : Restart systemd service: "slurmdbd.service"'
+
+  - name: 'Install : Set parameters for "{{ slurm_logs_dir }}/slurmctld.log"'
+    become: true
+    ansible.builtin.file:
+      path: '{{ slurm_logs_dir }}/slurmctld.log'
+      state: touch
+      mode: '0640'
+      owner: slurm
+      group: slurm
 
   - name: 'Install : Set parameters for "{{ slurm_logs_dir }}/slurmd.log"'
     become: true
@@ -176,7 +202,6 @@
       group: slurm
     notify: 
     - 'Handlers : Restart systemd service: "slurmdbd.service"'
-
 
   - name: 'Install : Copy systemd service: "slurmctld.service"'
     become: true

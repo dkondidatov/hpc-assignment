@@ -12,11 +12,11 @@ User=slurm
 Group=slurm
 RuntimeDirectory=slurmctld
 RuntimeDirectoryMode=0755
-ExecStart=/usr/sbin/slurmctld --systemd $SLURMCTLD_OPTIONS -f /etc/slurm/slurm.conf
+ExecStart=/usr/sbin/slurmctld --systemd $SLURMCTLD_OPTIONS
 ExecReload=/bin/kill -HUP $MAINPID
 LimitNOFILE=65536
 TasksMax=infinity
-#PIDFile=/run/slurm/slurmctld.pid
+PIDFile={{ slurm_runstate_dir }}/slurm/slurmctld.pid
 
 # Uncomment the following lines to disable logging through journald.
 # NOTE: It may be preferable to set these through an override file instead.

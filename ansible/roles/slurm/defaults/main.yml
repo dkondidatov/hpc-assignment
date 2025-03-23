@@ -3,12 +3,12 @@ lustre_mount_path: "/mnt/fsx"
 slurmdbd_port: 6819
 slurm_prefix: "/usr"
 slurm_temp_download_dir: "/tmp"
-slurm_run_state_dir: "/run"
-slurm_local_state_dir: "/var"
+slurm_runstate_dir: "/var/run"
 slurm_config_dir: "/etc/slurm"
 slurm_logs_dir: "/var/log/slurm"
 slurm_spool_dir: "/var/spool"
-slurm_configure_args: "--with-pmix=/usr/lib/x86_64-linux-gnu/pmix2" 
+slurm_worker_configure_args: "--with-pmix=/usr/lib/x86_64-linux-gnu/pmix2 --sysconfdir=/etc/slurm --runstatedir=/var/run/slurm" 
+slurm_master_configure_args: "--with-pmix=/usr/lib/x86_64-linux-gnu/pmix2 --sysconfdir=/etc/slurm --runstatedir=/var/run/slurm"
 slurm_dependencies:
   - libpmix-dev
   - libdbus-1-dev
@@ -28,3 +28,5 @@ slurm_dependencies:
   - libibmad-dev
   - libibumad-dev
   - mailutils
+  - libmysqlclient-dev
+  - build-essential

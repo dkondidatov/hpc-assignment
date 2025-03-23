@@ -1,6 +1,6 @@
 ---
 slurm_download_url: https://download.schedmd.com/slurm/slurm-24.11.3.tar.bz2
-slurm_skip_installation: true
+slurm_skip_installation: false
 slurm_package_name: slurm-24.11.3
 slurm_package_fullname: slurm-24.11.3.tar.bz2
 slurm_package_extension: tar.bz2
