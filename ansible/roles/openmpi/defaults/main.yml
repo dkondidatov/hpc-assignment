@@ -10,3 +10,4 @@ openmpi_dependencies:
   - openmpi-common
   - openmpi-doc 
   - libopenmpi-dev
+  - libpmix-bin
