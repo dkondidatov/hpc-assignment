@@ -1,0 +1,31 @@
+  - name: 'Handlers : Restart systemd service: "slurmdbd.service"'
+    become: true
+    ansible.builtin.systemd_service:
+      name: slurmdbd
+      state: restarted
+      daemon-reload: true
+    when: inventory_hostname in groups["hpc_master_nodes"]
+
+  - name: 'Handlers : Restart systemd service: "slurmctld.service"'
+    become: true
+    ansible.builtin.systemd_service:
+      name: slurmctld
+      state: restarted
+      daemon-reload: true
+    when: inventory_hostname in groups["hpc_master_nodes"]
+
+  - name: 'Handlers : Restart systemd service: "slurmd.service"'
+    become: true
+    ansible.builtin.systemd_service:
+      name: slurmd
+      state: restarted
+      daemon-reload: true
+    when: inventory_hostname in groups["hpc_worker_nodes"]
+
+  - name: 'Handlers : Restart systemd service: "mariadb.service"'
+    become: true
+    ansible.builtin.systemd_service:
+      name: mariadb.service
+      state: restarted
+      daemon-reload: true
+    when: inventory_hostname in groups["hpc_master_nodes"]

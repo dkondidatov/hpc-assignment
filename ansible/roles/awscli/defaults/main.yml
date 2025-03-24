@@ -1,0 +1,5 @@
+---
+awscli_download_dir: /tmp
+awscli_tmp_package_dir: /tmp/awscli
+awscli_package_name: awscliv2
+awscli_package_extension: zip

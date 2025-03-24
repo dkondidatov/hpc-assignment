@@ -1,0 +1,26 @@
+[Unit]
+Description=Slurm DBD accounting daemon
+After=network-online.target remote-fs.target munge.service mysql.service mysqld.service mariadb.service sssd.service
+Wants=network-online.target
+ConditionPathExists=/etc/slurm/slurmdbd.conf
+
+[Service]
+Type=simple
+EnvironmentFile=-/etc/default/slurmdbd
+User=root
+Group=root
+RuntimeDirectory=slurmdbd
+RuntimeDirectoryMode=0755
+ExecStart=/usr/sbin/slurmdbd -D -s $SLURMDBD_OPTIONS
+ExecReload=/bin/kill -HUP $MAINPID
+LimitNOFILE=65536
+TasksMax=infinity
+PIDFile={{ slurm_runstate_dir }}/slurm/slurmdbd.pid
+
+# Uncomment the following lines to disable logging through journald.
+# NOTE: It may be preferable to set these through an override file instead.
+#StandardOutput=null
+#StandardError=null
+
+[Install]
+WantedBy=multi-user.target

@@ -1,0 +1,32 @@
+---
+lustre_mount_path: "/mnt/fsx"
+slurmdbd_port: 6819
+slurm_prefix: "/usr"
+slurm_temp_download_dir: "/tmp"
+slurm_runstate_dir: "/var/run"
+slurm_config_dir: "/etc/slurm"
+slurm_logs_dir: "/var/log/slurm"
+slurm_spool_dir: "/var/spool"
+slurm_worker_configure_args: "--with-pmix=/usr/lib/x86_64-linux-gnu/pmix2 --sysconfdir=/etc/slurm --runstatedir=/var/run/slurm --with-hwloc" 
+slurm_master_configure_args: "--with-pmix=/usr/lib/x86_64-linux-gnu/pmix2 --sysconfdir=/etc/slurm --runstatedir=/var/run/slurm --with-hwloc"
+slurm_dependencies:
+  - libpmix-dev
+  - libdbus-1-dev
+  - bzip2
+  - libssl-dev
+  - libpam0g
+  - numactl
+  - libnuma-dev
+  - hwloc
+  - libhwloc-dev
+  - lua5.4 
+  - liblua5.4-dev
+  - libreadline-dev
+  - librrd-dev
+  - libncurses-dev
+  - man2html 
+  - libibmad-dev
+  - libibumad-dev
+  - mailutils
+  - libmysqlclient-dev
+  - build-essential

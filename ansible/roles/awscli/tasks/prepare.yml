@@ -1,0 +1,15 @@
+- name: 'Prepare : Remove old version of awscli'
+  ansible.builtin.apt:
+    name: awscli
+    state: absent
+
+- name: 'Prepare : Make sure awscli dependencies are installed'
+  become: true
+  ansible.builtin.apt:
+    autoremove: true
+    pkg:
+    - groff
+    - less
+    - unzip
+    - bzip2
+

@@ -1,0 +1,20 @@
+hpc_master_nodes:
+  hosts:
+    hpc_master_1:
+      ansible_host: 172.30.128.86
+      roles:
+        - fauust.mariadb
+  vars:
+    master_node: true
+
+hpc_worker_nodes:
+  hosts:
+    hpc_worker_1:
+      ansible_host: 172.30.128.68
+    hpc_worker_2:
+      ansible_host: 172.30.128.70
+    hpc_worker_3:
+      ansible_host: 172.30.128.73
+  vars:
+    worker_node: true
+   

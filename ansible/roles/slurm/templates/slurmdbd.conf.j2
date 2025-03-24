@@ -1,0 +1,13 @@
+AuthType=auth/munge
+DbdAddr={{ hostvars["hpc_master_1"].ansible_facts.hostname }}
+DbdHost={{ hostvars["hpc_master_1"].ansible_facts.hostname }}
+DbdPort={{ slurmdbd_port }}
+SlurmUser=slurm
+StorageType=accounting_storage/mysql
+StoragePort=3306
+StorageHost=localhost
+StorageLoc=slurm_acct_db
+StorageUser=slurm
+StoragePass=1234
+LogFile={{ slurm_logs_dir }}/slurmdbd.log
+PidFile={{ slurm_runstate_dir }}/slurm/slurmdbd.pid

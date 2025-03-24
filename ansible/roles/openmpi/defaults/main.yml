@@ -1,0 +1,12 @@
+---
+openmpi_download_dir: "/tmp"
+openmpi_prefix: "/usr"
+openmpi_dependencies:
+  - autoconf
+  - automake
+  - libtool
+  - make
+  - openmpi-bin 
+  - openmpi-common
+  - openmpi-doc 
+  - libopenmpi-dev
