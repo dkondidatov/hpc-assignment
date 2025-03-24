@@ -33,20 +33,20 @@ MpiDefault=pmix
 #PrivateData=jobs
 ProctrackType=proctrack/cgroup
 #Prolog=
-#PrologFlags=
+PrologFlags=Contain,X11
 #PrologSlurmctld=
 #PropagatePrioProcess=0
 #PropagateResourceLimits=
 #PropagateResourceLimitsExcept=
 #RebootProgram=
-ReturnToService=1
+ReturnToService=2
 SlurmctldPidFile={{ slurm_runstate_dir }}/slurm/slurmctld.pid
 SlurmctldPort=6817
 SlurmdPidFile={{ slurm_runstate_dir }}/slurm/slurmd.pid
 SlurmdPort=6818
 SlurmdSpoolDir=/var/spool/slurmd
 SlurmUser=slurm
-#SlurmdUser=root
+SlurmdUser=root
 #SrunEpilog=
 #SrunProlog=
 SrunPortRange=60001-63000
@@ -124,9 +124,9 @@ JobCompType=jobcomp/none
 #JobContainerType=
 JobAcctGatherFrequency=30
 JobAcctGatherType=jobacct_gather/cgroup
-SlurmctldDebug=info
+SlurmctldDebug=verbose
 SlurmctldLogFile=/var/log/slurm/slurmctld.log
-SlurmdDebug=info
+SlurmdDebug=verbose
 SlurmdLogFile=/var/log/slurm/slurmd.log
 #SlurmSchedLogFile=
 #SlurmSchedLogLevel=
@@ -148,7 +148,7 @@ SlurmdLogFile=/var/log/slurm/slurmd.log
 # COMPUTE NODES
 {% for host in hostvars.values() %}
 {% if host.worker_node is defined and host.worker_node == true %}
-NodeName={{ host.ansible_facts.fqdn }} NodeAddr={{ host.ansible_host }} Procs={{ host.ansible_facts.processor_vcpus }} RealMemory={{ host.ansible_facts.memtotal_mb - (host.ansible_facts.memtotal_mb // 100 * 20)}} State=UNKNOWN
+NodeName={{ host.ansible_facts.hostname }} NodeAddr={{ host.ansible_host }} Procs={{ host.ansible_facts.processor_vcpus }} RealMemory={{ host.ansible_facts.memtotal_mb - (host.ansible_facts.memtotal_mb // 100 * 20)}} State=UNKNOWN
 {% endif %}
 {% endfor %}
-PartitionName=normal Nodes=ALL Default=YES MaxTime=INFINITE State=UP Default=YES
+PartitionName=normal Nodes=ALL Default=YES MaxTime=INFINITE State=UP

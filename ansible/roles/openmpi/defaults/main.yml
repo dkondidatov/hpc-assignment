@@ -6,3 +6,7 @@ openmpi_dependencies:
   - automake
   - libtool
   - make
+  - openmpi-bin 
+  - openmpi-common
+  - openmpi-doc 
+  - libopenmpi-dev

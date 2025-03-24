@@ -74,12 +74,12 @@
     owner: slurm
     group: slurm
 
-- name: 'Install : Set parameters for "{{ slurm_spool_dir }}/slurm"'
+- name: 'Install : Set parameters for "{{ slurm_spool_dir }}/slurmd"'
   become: true
   ansible.builtin.file:
-    path: '{{ slurm_spool_dir }}/slurm'
+    path: '{{ slurm_spool_dir }}/slurmd'
     state: directory
-    mode: '0750'
+    mode: '0755'
     owner: slurm
     group: slurm
 
@@ -88,7 +88,7 @@
   ansible.builtin.file:
     path: '"{{ slurm_spool_dir }}/slurmctld"'
     state: directory
-    mode: '0750'
+    mode: '0755'
     owner: slurm
     group: slurm
   when: inventory_hostname in groups["hpc_master_nodes"]

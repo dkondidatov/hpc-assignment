@@ -7,8 +7,8 @@ slurm_runstate_dir: "/var/run"
 slurm_config_dir: "/etc/slurm"
 slurm_logs_dir: "/var/log/slurm"
 slurm_spool_dir: "/var/spool"
-slurm_worker_configure_args: "--with-pmix=/usr/lib/x86_64-linux-gnu/pmix2 --sysconfdir=/etc/slurm --runstatedir=/var/run/slurm" 
-slurm_master_configure_args: "--with-pmix=/usr/lib/x86_64-linux-gnu/pmix2 --sysconfdir=/etc/slurm --runstatedir=/var/run/slurm"
+slurm_worker_configure_args: "--with-pmix=/usr/lib/x86_64-linux-gnu/pmix2 --sysconfdir=/etc/slurm --runstatedir=/var/run/slurm --with-hwloc" 
+slurm_master_configure_args: "--with-pmix=/usr/lib/x86_64-linux-gnu/pmix2 --sysconfdir=/etc/slurm --runstatedir=/var/run/slurm --with-hwloc"
 slurm_dependencies:
   - libpmix-dev
   - libdbus-1-dev

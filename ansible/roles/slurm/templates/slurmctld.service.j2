@@ -6,10 +6,9 @@ ConditionPathExists=/etc/slurm/slurm.conf
 
 [Service]
 Type=notify
-EnvironmentFile=-/etc/sysconfig/slurmctld
 EnvironmentFile=-/etc/default/slurmctld
-User=slurm
-Group=slurm
+User=root
+Group=root
 RuntimeDirectory=slurmctld
 RuntimeDirectoryMode=0755
 ExecStart=/usr/sbin/slurmctld --systemd $SLURMCTLD_OPTIONS

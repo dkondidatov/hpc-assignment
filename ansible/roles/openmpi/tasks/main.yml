@@ -20,7 +20,7 @@
   ansible.builtin.shell:
   args:
     chdir: "{{ openmpi_download_dir }}/openmpi-{{ openmpi_version }}"
-    cmd: "./configure --prefix={{ openmpi_prefix }} 2>&1 | tee config.out"
+    cmd: "./configure --prefix={{ openmpi_prefix }} --with-pmi --with-pmix 2>&1 | tee config.out"
 
 - name: 'Install : Run openmpi make script'
   become: true
