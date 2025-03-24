@@ -11,5 +11,6 @@
 
 export OMPI_MCA_btl_tcp_if_include=ens5
 srun --mpi=pmix /mnt/fsx/slurm/matrix_mult_cpp /mnt/fsx/slurm/matrix_A.in /mnt/fsx/slurm/matrix_B.in /mnt/fsx/slurm/matrix_C.out
+aws s3 cp "/mnt/fsx/slurm/matrix_C.out" "s3://hpc-hr/dkondidatov/result.out" #"s3://hpc-hr/dkondidatov/result-$(date +"%d-%m-%Y").out"
 
 

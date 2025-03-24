@@ -8,6 +8,13 @@ Requirements
 
 No requirements
 
+Validation
+----------
+```bash
+mpirun --version
+pmix_info
+```
+
 Role Variables
 --------------
 

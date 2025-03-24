@@ -11,6 +11,16 @@ Roles:
 - munge
 - openmpi
 
+Validation
+----------
+```bash
+# On Master node
+systemctl status slurmctld
+systemctl status slurmdbd
+sinfo
+srun --nodes=3 --ntasks=3 --chdir /tmp hostname
+```
+
 Role Variables
 --------------
 

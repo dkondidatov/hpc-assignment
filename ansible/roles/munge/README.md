@@ -9,6 +9,26 @@ Requirements
 Roles: 
 - awscli
 
+Validation
+----------
+```bash
+systemctl status munge
+munge -n | unmunge
+
+# Expected result
+STATUS:          Success (0)
+ENCODE_HOST:     hostname (ipv4)
+ENCODE_TIME:     2025-03-24 15:23:06 +0000 (1742829786)
+DECODE_TIME:     2025-03-24 15:23:06 +0000 (1742829786)
+TTL:             300
+CIPHER:          aes128 (4)
+MAC:             sha256 (5)
+ZIP:             none (0)
+UID:             ubuntu (1000)
+GID:             ubuntu (1000)
+LENGTH:          0
+```
+
 Role Variables
 --------------
 |Variable|Description|
