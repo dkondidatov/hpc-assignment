@@ -43,11 +43,17 @@ sudo systemctl status slurmdbd.service
 ```
 7) Build С-code
 ```bash
-mpicc ./hpc-assignment/src/pmm.c -o /mnt/fsx/slurm/pmm_c_v2
+mpic++ ./hpc-assignment/src/matrix_mult.cpp -o /mnt/fsx/slurm/matrix_mult_cpp
 ```
-8) Run sbatch script
+8) Prepare input data. The data must be placed on LustreFSx to be available for all worker nodes
+```bash
+cp ./hpc-assignment/A.in /mnt/fsx/slurm/matrix_A.in 
+cp ./hpc-assignment/B.in /mnt/fsx/slurm/matrix_B.in
+```
+9) Update sbatch running script and specify valid paths for Inputs and Outputs
+10) Run sbatch script
 ```bash
 export SLURM_CONF="/etc/slurm/slurm.conf"
 sbatch ./hpc-assignment/run_script.sh
 ```
-9) Check the results in `/mnt/fsx/slurm`
+11) Check the results in `/mnt/fsx/slurm`
